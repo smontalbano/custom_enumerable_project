@@ -3,28 +3,25 @@ module Enumerable
   def my_each_with_index
     return self unless block_given?
 
-    i = 0
-    while i < length
-      yield(self[i], i)
-      i += 1    
+    index = 0
+    self.my_each do |item|
+      yield(item, index)
+      index += 1
     end
-    self
   end
 
   def my_select
     arr = []
     return self unless block_given?
 
-    for item in self
-      yield(item) ? arr << item : next
-    end
+    self.my_each { |item| yield(item) ? arr << item : next}
     arr
   end
 
   def my_all?
     return self unless block_given?
 
-    for item in self
+    self.my_each do |item|
       if yield(item)
         next
       else
@@ -37,7 +34,7 @@ module Enumerable
   def my_any?
     return self unless block_given?
 
-    for item in self
+    self.my_each do |item|
       if yield(item)
         return true
       else
@@ -50,7 +47,7 @@ module Enumerable
   def my_none?
     return self unless block_given?
 
-    for item in self
+    self.my_each do |item|
       if yield(item)
         return false
       end
@@ -62,9 +59,7 @@ module Enumerable
     return self.length unless block_given?
 
     count = 0
-    for item in self
-      yield(item) ? count += 1 : next
-    end
+    self.my_each { |item| yield(item) ? count += 1 : next}
     count
   end
 
@@ -72,9 +67,7 @@ module Enumerable
     return self unless block_given?
 
     arr = []
-    for item in self
-      arr << yield(item)
-    end
+    self.my_each { |item| arr << yield(item)}
     arr
   end
 
@@ -82,9 +75,7 @@ module Enumerable
     return self unless block_given?
 
     total = val
-    for item in self
-      total = yield(total, item)
-    end
+    self.my_each { |item| total = yield(total, item)}
     total
   end
 end
